@@ -21,7 +21,7 @@ enable_testing()
 
 add_executable(
         gemm_project
-#		test_cblas_dgemm.cpp
+		test_cblas_dgemm.cpp
 		test_slow_gemm.cpp
 		slow_dgemm.cpp
 		common.h
@@ -29,7 +29,7 @@ add_executable(
 )
 target_link_libraries(
         gemm_project
-#        openblas
+        openblas
         GTest::gtest_main
 )
 
