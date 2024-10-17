@@ -1,8 +1,15 @@
 #include <immintrin.h>
 #include <algorithm>
 
+// Link to the article from which the code is taken:
+// https://habr.com/ru/articles/359272/
+
+#ifdef _WIN64
 const int L1 = 32 * 1024, L2 = 256 * 1024, L3 = 2 * 1024 * 1024;
-//const int L1 = 512 * 1024, L2 = 4096 * 1024, L3 = 16 * 1024 * 1024;
+#else
+#include <unistd.h>
+const int L1 = sysconf(_SC_LEVEL1_DCACHE_SIZE), L2 = sysconf(_SC_LEVEL2_CACHE_SIZE), L3 = sysconf(_SC_LEVEL3_CACHE_SIZE);
+#endif
 
 void gemm_v0(int M, int N, int K, const float *A, const float *B, float *C) {
     for (int i = 0; i < M; ++i) {
@@ -163,7 +170,6 @@ void macro_v5(int M, int N, int K, const float *A, int lda,
 }
 
 void gemm_v5(int M, int N, int K, const float *A, const float *B, float *C) {
-//    const int L1 = 32 * 1024;
     int mK = std::min(L1 / 4 / 16, K);
     buf_t bufB(16 * mK);
     for (int k = 0; k < K; k += mK) {
@@ -214,7 +220,6 @@ void macro_v6(int M, int N, int K, const float *A,
 }
 
 void gemm_v6(int M, int N, int K, const float *A, const float *B, float *C) {
-//    const int L1 = 32 * 1024, L2 = 256 * 1024;
     int mK = std::min(L1 / 4 / 16, K) / 4 * 4;
     int mM = std::min(L2 / 4 / mK, M) / 6 * 6;
     buf_t bufB(16 * mK);
@@ -242,7 +247,6 @@ void macro_v7(int M, int N, int K, const float *A,
 }
 
 void gemm_v7(int M, int N, int K, const float *A, const float *B, float *C) {
-//    const int L1 = 32 * 1024, L2 = 256 * 1024, L3 = 2 * 1024 * 1024;
     int mK = std::min(L1 / 4 / 16, K) / 4 * 4;
     int mM = std::min(L2 / 4 / mK, M) / 6 * 6;
     int mN = std::min(L3 / 4 / mK, N) / 16 * 16;
