@@ -37,6 +37,8 @@ add_executable(
         habr_article_project
 		test_habr_gemm.cpp
 		habr_dgemm.cpp
+		cpu_info.cpp
+		cpu_info.h
 		common.h
 		common.cpp
 )

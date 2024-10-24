@@ -1,64 +1,11 @@
 #include <immintrin.h>
 #include <algorithm>
-
+#include "cpu_info.h"
 
 // Link to the article from which the code is taken:
 // https://habr.com/ru/articles/359272/
 
-
-size_t cache_line_size(int level);
-
-#if defined(__APPLE__)
-
-#include <sys/sysctl.h>
-size_t cache_size(int level) {
-    size_t cache_size = 0;
-    size_t sizeof_cache_size = sizeof(cache_size);
-    if (level == 1) {
-        sysctlbyname("hw.l1dcachesize", &cache_size, &sizeof_cache_size, 0, 0);
-    } else if (level == 2) {
-        sysctlbyname("hw.l2cachesize", &cache_size, &sizeof_cache_size, 0, 0);
-    } else if (level == 3) {
-        sysctlbyname("hw.l3cachesize", &cache_size, &sizeof_cache_size, 0, 0);
-    }
-    return line_size;
-}
-
-const int L1 = cache_line_size(1), L2 = cache_line_size(2), L3 = cache_line_size(3);
-#elif defined(_WIN64)
-
-#include <cstdlib>
-#include <windows.h>
-
-size_t cache_line_size(int level) {
-    size_t line_size = 0;
-    DWORD buffer_size = 0;
-    DWORD i = 0;
-    SYSTEM_LOGICAL_PROCESSOR_INFORMATION *buffer = 0;
-
-    GetLogicalProcessorInformation(0, &buffer_size);
-    buffer = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION *) malloc(buffer_size);
-    GetLogicalProcessorInformation(&buffer[0], &buffer_size);
-
-    for (i = 0; i != buffer_size / sizeof(SYSTEM_LOGICAL_PROCESSOR_INFORMATION); ++i) {
-        if (buffer[i].Relationship == RelationCache && buffer[i].Cache.Level == level) {
-            line_size = buffer[i].Cache.Size;
-            break;
-        }
-    }
-
-    free(buffer);
-    return line_size;
-}
-
-const int L1 = cache_line_size(1), L2 = cache_line_size(2), L3 = cache_line_size(3);
-
-#else
-
-#include <unistd.h>
-const int L1 = sysconf(_SC_LEVEL1_DCACHE_SIZE), L2 = sysconf(_SC_LEVEL2_CACHE_SIZE), L3 = sysconf(_SC_LEVEL3_CACHE_SIZE);
-
-#endif
+const int L1 = cache_size(1), L2 = cache_size(2), L3 = cache_size(3);
 
 void gemm_v0(int M, int N, int K, const float *A, const float *B, float *C) {
     for (int i = 0; i < M; ++i) {

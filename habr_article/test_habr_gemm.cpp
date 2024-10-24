@@ -22,8 +22,8 @@ void test_gemm(gemm_function &gemm, matrice_sizes &sizes, int cnt_iter = 50) {
 
     auto duration = min_funcTime(cnt_iter, gemm.func, sizes.m, sizes.n, sizes.k, A.data(), B.data(), C.data());
     long long number_of_operations = 2LL * sizes.m * sizes.n * sizes.k;
-    std::cout << gemm.name << ", " << std::flush << duration << ", " << (double) number_of_operations / (duration / 1000) / 1e9
-              << std::endl;
+    std::cout << gemm.name << ", " << std::flush;
+    std:: cout << duration << ", " << (double) number_of_operations / (duration / 1000) / 1e9 << std::endl;
 }
 
 void gemm_openblas(int M, int N, int K, const float *A, const float *B, float *C) {
