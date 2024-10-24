@@ -13,7 +13,7 @@ double funcTime(F func, Args &&... args) {
     const auto &start = std::chrono::high_resolution_clock::now();
     std::forward<decltype(func)>(func)(std::forward<decltype(args)>(args)...);
     const auto &stop = std::chrono::high_resolution_clock::now();
-    return std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+    return (double)std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count() / 1000.0;
 #else
     struct timespec tp1, tp2;
     clock_gettime(CLOCK_MONOTONIC, &tp1) ;

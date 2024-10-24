@@ -17,4 +17,7 @@ void gemm_v6(int M, int N, int K, const float *A, const float *B, float *C);
 
 void gemm_v7(int M, int N, int K, const float *A, const float *B, float *C);
 
+// Add paralleling with OpenMP to gemm_v7
+void gemm_v8(int M, int N, int K, const float *A, const float *B, float *C);
+
 #endif //HABR_ARTICLE_PROJECT_HABR_DGEMM_H

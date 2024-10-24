@@ -6,9 +6,19 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
 
-set(CMAKE_CXX_FLAGS "-fPIC -O3 -march=native")
-set(CMAKE_CXX_FLAGS_RELEASE "-fPIC -O3 -march=native")
-set(CMAKE_CXX_FLAGS_DEBUG "-fPIC -O3 -march=native")
+find_package(OpenMP REQUIRED)
+
+set(CMAKE_CXX_FLAGS "-fPIC -O3 -march=native ${OpenMP_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_RELEASE "-fPIC -O3 -march=native ${OpenMP_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "-fPIC -O3 -march=native ${OpenMP_CXX_FLAGS}")
+
+if (WIN32)
+	set(INC_OPENBLAS_DIR C:\\1\\OpenBlas\\include)
+	set(LINK_OPENBLAS_DIR C:\\1\\OpenBlas\\lib)
+
+	include_directories(${INC_OPENBLAS_DIR})
+	link_directories(${LINK_OPENBLAS_DIR})
+endif (WIN32)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -33,6 +43,8 @@ add_executable(
 target_link_libraries(
 		habr_article_project
         GTest::gtest_main
+		openblas.a
+		OpenMP::OpenMP_CXX
 )
 
 include(GoogleTest)
