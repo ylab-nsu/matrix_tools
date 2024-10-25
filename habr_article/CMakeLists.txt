@@ -33,15 +33,18 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+include_directories(${CMAKE_SOURCE_DIR}/include)
+
 add_executable(
         habr_article_project
-		test_habr_gemm.cpp
-		habr_dgemm.cpp
-		cpu_info.cpp
-		cpu_info.h
-		common.h
-		common.cpp
+		test/test_habr_gemm.cpp
+		src/habr_dgemm.cpp
+		src/cpu_info.cpp
+		include/cpu_info.h
+		include/common.h
+		src/common.cpp
 )
+
 target_link_libraries(
 		habr_article_project
         GTest::gtest_main
