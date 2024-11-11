@@ -1,0 +1,10 @@
+#set -x
+
+work=./mem-lat
+buffer_size=1
+stride=256
+
+for i in `seq 1 25`; do
+    taskset -ac 0 $work -b $buffer_size -s $stride
+    buffer_size=$(($buffer_size*2))
+done
